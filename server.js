@@ -26,10 +26,7 @@ app.get("/room", (req, res) => {
 
 io.on("connection", (socket) => {
   socket.on("join-room", (roomId) => {
-    const rooms = io.sockets.adapter.rooms;
-    console.log(rooms);
-
-    rooms.get(roomId) ? console.log("Room Found") : socket.join(roomId);
+    
   });
 });
 
