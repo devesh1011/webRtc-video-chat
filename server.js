@@ -17,16 +17,16 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // Route to render index.ejs
 app.get("/", (req, res) => {
-  res.render("lobby.ejs");
-});
-
-app.get("/room", (req, res) => {
   res.render("index.ejs");
 });
 
 io.on("connection", (socket) => {
-  socket.on("join-room", (roomId) => {
-    
+  socket.on("connection", (socket) => {
+    console.log("user connected");
+  });
+
+  socket.on("disconnect", (socket) => {
+    console.log("user disconnected");
   });
 });
 
