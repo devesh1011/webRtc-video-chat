@@ -21,12 +21,46 @@ app.get("/", (req, res) => {
 });
 
 io.on("connection", (socket) => {
-  socket.on("connection", (socket) => {
-    console.log("user connected");
+  console.log("user connected");
+
+  socket.on("join-room", (roomId) => {
+    const rooms = io.sockets.adapter.rooms;
+
+    const room = rooms.get(roomId);
+
+    if (!room) {
+      socket.join(roomId);
+      socket.emit("room-created");
+    } else if (room.size === 1) {
+      socket.join(roomId);
+      socket.emit("room-joined");
+    } else {
+      console.log("room is full now");
+      socket.emit("room-full");
+    }
   });
 
-  socket.on("disconnect", (socket) => {
+  socket.on("ready", (roomId) => {
+    console.log("ready");
+    socket.broadcast.to(roomId).emit("ready");
+  });
+
+  socket.on("candidates", (candidate, roomId) => {
+    console.log("candidate");
+    socket.broadcast.to(roomId).emit("candidate", candidate);
+  });
+
+  socket.on("disconnect", () => {
     console.log("user disconnected");
+  });
+
+  socket.on("offer", (offer, roomId) => {
+    console.log("called offer event");
+  });
+
+  socket.on("create-answer", (answer, roomId) => {
+    console.log("offer");
+    socket.broadcast.to(roomId).emit("answer", answer);
   });
 });
 
